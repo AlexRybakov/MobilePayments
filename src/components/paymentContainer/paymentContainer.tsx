@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Operator, commitPaymentRequest } from '@/data/mockData';
 import { IPaymentForm } from '@/types';
@@ -22,41 +22,37 @@ const PaymentContainer = ({ operator }: Props) => {
   const [loading, setLoading] = useState(false);
   const [paymentResult, setPaymentResult] = useState(false);
   const [showMessage, setShowMessage] = useState(false);
+  const [error, setError] = useState<string>();
 
   const router = useRouter();
 
-  const handleHideMessage = useCallback(() => {
-    setShowMessage(false);
-  }, []);
+  const handleHideMessage = () => setShowMessage(false);
 
-  const handleError = useCallback(() => {
-    // TODO handling error
-  }, []);
-
-  const handleConfirmPayment = useCallback(async (data: IPaymentForm) => {
+  const handleConfirmPayment = async (data: IPaymentForm) => {
     setLoading(true);
+    setError(undefined);
 
     try {
       const result = await commitPaymentRequest(data);
       setPaymentResult(result);
-    } catch (error) {
-      handleError();
+    } catch (error: any) {
+      setError(error);
     } finally {
       setShowMessage(true);
       setLoading(false);
     }
-  }, []);
-
-  const handleNavigateToMain = useCallback(() => {
-    setTimeout(() => {
-      router.push(mainPath);
-    }, NAVIGATE_DELAY);
-  }, []);
+  };
 
   useEffect(() => {
-    if (paymentResult) {
-      handleNavigateToMain();
+    if (!paymentResult) {
+      return;
     }
+
+    const timeoutId = setTimeout(() => {
+      router.push(mainPath);
+    }, NAVIGATE_DELAY);
+
+    return () => clearTimeout(timeoutId);
   }, [paymentResult]);
 
   if (!operator) {
@@ -75,6 +71,7 @@ const PaymentContainer = ({ operator }: Props) => {
       {showMessage && (
         <Message
           result={paymentResult}
+          error={error}
           onClose={handleHideMessage}
           duration={1500}
         />

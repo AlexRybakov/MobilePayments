@@ -9,13 +9,14 @@ import {
 
 interface Props {
   result: boolean;
+  error?: string;
   onClose: () => void;
   duration?: number;
 }
 
 const DEFAULT_DURATION = 2000;
 
-const Message = ({ result, onClose, duration }: Props) => {
+const Message = ({ result, error, onClose, duration }: Props) => {
   useEffect(() => {
     const timeout = setTimeout(onClose, duration || DEFAULT_DURATION);
     return () => {
@@ -25,14 +26,15 @@ const Message = ({ result, onClose, duration }: Props) => {
 
   return (
     <Root>
-      {result ? (
+      {result && (
         <Wrapper>
           <PositiveText>Успешно!</PositiveText>
           <Hint>Вы будете перенаправлены на главную страницу</Hint>
         </Wrapper>
-      ) : (
-        <NegativeText>Ошибка! Попробуйте снова!</NegativeText>
       )}
+      {
+        error && <NegativeText>{error}</NegativeText>
+      }
     </Root>
   );
 };

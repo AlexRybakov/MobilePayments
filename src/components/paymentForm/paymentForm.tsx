@@ -7,6 +7,7 @@ import IMask from 'imask';
 
 import { IPaymentForm } from '@/types';
 import { Button } from '@/global.styles';
+import Loader from '@/components/loader';
 import { Root, FieldWrapper, Label, Input, Error } from './paymentForm.styles';
 
 interface Props {
@@ -42,7 +43,11 @@ const PaymentForm = ({ onConfirm, loading }: Props) => {
       message: 'Введите сумму пополнения',
     },
     minLength: { value: 1, message: 'Введите сумму пополнения' },
-    maxLength: { value: 3, message: 'Превышена максимальная сумма' },
+    // maxLength: { value: 3, message: 'Превышена максимальная сумма' },
+    pattern: {
+      value: /^([1-9][0-9]{0,2}|1000)$/,
+      message: 'Сумма пополнения от 1Р до 1000Р',
+    },
   });
 
   useEffect(() => {
@@ -63,7 +68,7 @@ const PaymentForm = ({ onConfirm, loading }: Props) => {
   return (
     <Root onSubmit={onSubmit}>
       <FieldWrapper>
-        <Label className={classnames({ hasError: errors.text })}>
+        <Label htmlFor='phone' className={classnames({ hasError: errors.text })}>
           Номер телефона
         </Label>
 
@@ -78,7 +83,7 @@ const PaymentForm = ({ onConfirm, loading }: Props) => {
         {errors.text && <Error>{errors.text.message}</Error>}
       </FieldWrapper>
       <FieldWrapper>
-        <Label className={classnames({ hasError: errors.sum })}>
+        <Label htmlFor='sum' className={classnames({ hasError: errors.sum })}>
           Сумма в рублях
         </Label>
 
@@ -86,7 +91,7 @@ const PaymentForm = ({ onConfirm, loading }: Props) => {
           id='sum'
           className={classnames({ hasError: errors.sum })}
           {...sumParams}
-          type='number'
+          type='text'
           placeholder='от 1р до 1000р'
         />
 
@@ -94,6 +99,7 @@ const PaymentForm = ({ onConfirm, loading }: Props) => {
       </FieldWrapper>
 
       <Button type='submit' disabled={loading}>
+        {loading ? <Loader size={36} /> : null}
         Оплатить
       </Button>
     </Root>

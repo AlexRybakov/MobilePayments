@@ -62,9 +62,12 @@ export const data: Operator[] = [
 const COMMIT_PAYMENT_DURATION = 2000;
 
 export const commitPaymentRequest = (requestPayload: IPaymentForm): Promise<boolean> => {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     setTimeout(() => {
       const result = Math.random() < 0.5;
+      if (!result) {
+        reject('Ошибка! Попробуйте снова!');
+      }
       resolve(result);
     }, COMMIT_PAYMENT_DURATION);
   });

@@ -2,13 +2,19 @@ import { ColorRing } from 'react-loader-spinner';
 
 import { Root } from './loader.styles';
 
-const Loader = () => {
+const DEFAULT_SIZE = 80;
+
+interface Props {
+  size?: number;
+}
+
+const Loader = ({ size = DEFAULT_SIZE }: Props) => {
   return (
     <Root>
       <ColorRing
         visible={true}
-        height='80'
-        width='80'
+        height={size}
+        width={size}
         ariaLabel='blocks-loading'
         wrapperStyle={{}}
         wrapperClass='blocks-wrapper'

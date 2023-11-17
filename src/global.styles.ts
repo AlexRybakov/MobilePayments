@@ -4,7 +4,9 @@ const buttonCss = css`
   width: 100%;
   color: black;
   position: relative;
-  display: inline-block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   outline: none;
   border: 0;
   cursor: pointer;
